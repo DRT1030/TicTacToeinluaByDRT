@@ -2,15 +2,16 @@ math.randomseed(os.time())
 board = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }
 seperator = "|"
 
-turn1 = "X"
-turn2 = "O"
-
 function setup()
     for i = 1,#board,3 do
         print(board[i] .. seperator .. board[i+1] .. seperator .. board[i+2])
     end
 end
-setup()
+
+function reset()
+    board = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }
+end
+
 
 function isEmpty(n)
     return board[n] ~= "X" and board[n] ~= "O"
@@ -19,23 +20,23 @@ end
 function getWinningMove(player) -- for the bot to pick your winning move
     -- Check rows
     for i = 1, 7, 3 do
-        if board[i] == player and board[i+1] == player and isEmpty(i+2) then return i+2 end
-        if board[i] == player and board[i+2] == player and isEmpty(i+1) then return i+1 end
-        if board[i+1] == player and board[i+2] == player and isEmpty(i) then return i end
+        if board[i] == player and board[i+1] == player and isEmpty(i+2) then return i+2 end -- 1 2 checks 3
+        if board[i] == player and board[i+2] == player and isEmpty(i+1) then return i+1 end -- 1 3 checks 2
+        if board[i+1] == player and board[i+2] == player and isEmpty(i) then return i end -- 2 3 checks 1
     end
     -- Check columns
     for i = 1, 3 do
-        if board[i] == player and board[i+3] == player and isEmpty(i+6) then return i+6 end
-        if board[i] == player and board[i+6] == player and isEmpty(i+3) then return i+3 end
-        if board[i+3] == player and board[i+6] == player and isEmpty(i) then return i end
+        if board[i] == player and board[i+3] == player and isEmpty(i+6) then return i+6 end -- 1 6 checks 3
+        if board[i] == player and board[i+6] == player and isEmpty(i+3) then return i+3 end -- 1 9 checks 6
+        if board[i+3] == player and board[i+6] == player and isEmpty(i) then return i end -- 3 9 checks 1
     end
     -- Check diagonals
-    if board[1] == player and board[5] == player and isEmpty(9) then return 9 end
-    if board[1] == player and board[9] == player and isEmpty(5) then return 5 end
-    if board[5] == player and board[9] == player and isEmpty(1) then return 1 end
-    if board[3] == player and board[5] == player and isEmpty(7) then return 7 end
-    if board[3] == player and board[7] == player and isEmpty(5) then return 5 end
-    if board[5] == player and board[7] == player and isEmpty(3) then return 3 end
+    if board[1] == player and board[5] == player and isEmpty(9) then return 9 end -- 1 5 checks 9
+    if board[1] == player and board[9] == player and isEmpty(5) then return 5 end -- 1 9 checks 5
+    if board[5] == player and board[9] == player and isEmpty(1) then return 1 end -- 5 9 checks 1
+    if board[3] == player and board[5] == player and isEmpty(7) then return 7 end -- 3 5 checks 7
+    if board[3] == player and board[7] == player and isEmpty(5) then return 5 end -- 3 7 checks 5
+    if board[5] == player and board[7] == player and isEmpty(3) then return 3 end -- 5 7 checks 3
     return nil
 end
 
@@ -49,10 +50,8 @@ function boardcheck()
 end
 
 function getBlockingMove()
-    return getWinningMove("X")  -- Block player's winning move
+    return getWinningMove("X")  -- Block player's winning move by checking if its x
 end
-
-
 
 function getComputermove()
     local move = getWinningMove("O")
@@ -76,12 +75,23 @@ function getComputermove()
     return math.random(1,9)
 end
 
+function checkwin()
+    for i= 1,3,3 do
+        if board[i] == "O" and board[i+1] == "O" and board[i+1] == "O" then return "comp" end
+    end
+    for i = 1,3 do
+        if board[i] == "O" and board[i+3] == "O" and board[i+6] == "O" then return "comp" end
+    end
+end
+
+
 while true do
     boardcheck()
     if boardcheck() == true then
-        print("DRAW")
-        break
+        print("DRAW\n\n\n")
+        reset()
     else
+        setup()
         print("Welcome, please choose 1-9")
     local p1 = io.read("*line")
     if p1 == "q" then
@@ -93,7 +103,6 @@ while true do
         if compMove then
             board[compMove] = "O"
         end
-        setup()
     else
         print("Invalid move, try again.")
     end
