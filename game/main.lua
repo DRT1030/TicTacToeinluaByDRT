@@ -76,17 +76,58 @@ function getComputermove()
 end
 
 function checkwin()
-    for i= 1,3,3 do
-        if board[i] == "O" and board[i+1] == "O" and board[i+1] == "O" then return "comp" end
+    -- Check rows
+    for i = 1, 9, 3 do
+        if board[i] ~= "" and board[i] == board[i+1] and board[i] == board[i+2] then
+            if board[i] == "O" then
+                return "comp"
+            elseif board[i] == "X" then
+                return "player"
+            end
+        end
     end
-    for i = 1,3 do
-        if board[i] == "O" and board[i+3] == "O" and board[i+6] == "O" then return "comp" end
+
+    -- Check columns
+    for i = 1, 3 do
+        if board[i] ~= "" and board[i] == board[i+3] and board[i] == board[i+6] then
+            if board[i] == "O" then
+                return "comp"
+            elseif board[i] == "X" then
+                return "player"
+            end
+        end
+    end
+
+    -- Check diagonals
+    if board[1] ~= "" and board[1] == board[5] and board[1] == board[9] then
+        if board[1] == "O" then
+            return "comp"
+        elseif board[1] == "X" then
+            return "player"
+        end
+    end
+
+    if board[3] ~= "" and board[3] == board[5] and board[3] == board[7] then
+        if board[3] == "O" then
+            return "comp"
+        elseif board[3] == "X" then
+            return "player"
+        end
     end
 end
 
 
+
 while true do
     boardcheck()
+    local winner = checkwin()
+    if winner == "comp" then
+        print("Computer won")
+        reset()
+    elseif winner == "player" then
+        print("Player won")
+        reset()
+    end
     if boardcheck() == true then
         print("DRAW\n\n\n")
         reset()
