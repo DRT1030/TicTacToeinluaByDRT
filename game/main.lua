@@ -122,10 +122,12 @@ while true do
     boardcheck()
     local winner = checkwin()
     if winner == "comp" then
-        print("Computer won")
+        setup()
+        print("Computer won\n\n\n")
         reset()
     elseif winner == "player" then
-        print("Player won")
+        setup()
+        print("Player won\n\n\n")
         reset()
     end
     if boardcheck() == true then
