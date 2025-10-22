@@ -1,6 +1,7 @@
 math.randomseed(os.time())
-board = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }
-seperator = "|"
+local board = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }
+local seperator = "|"
+local mode = nil
 
 function setup()
     for i = 1,#board,3 do
@@ -75,6 +76,16 @@ function getComputermove()
     return math.random(1,9)
 end
 
+function getComputereasymove()
+    local move = math.random(1,9)
+    while board[move] == "X" or board[move] == "O" do
+        move = math.random(1,9)
+    end
+    print(move)
+    return move
+    
+end
+
 function checkwin()
     -- Check rows
     for i = 1, 9, 3 do
@@ -116,39 +127,80 @@ function checkwin()
     end
 end
 
-
-
 while true do
-    boardcheck()
-    local winner = checkwin()
-    if winner == "comp" then
-        setup()
-        print("Computer won\n\n\n")
-        reset()
-    elseif winner == "player" then
-        setup()
-        print("Player won\n\n\n")
-        reset()
+    if mode == nil then
+        print("Choose your mode: AI (HARD) | AI (EASY) | PLAYER (P)")
+        mode = io.read("*line")
+        print("Mode chosen: " .. mode)
     end
-    if boardcheck() == true then
-        print("DRAW\n\n\n")
-        reset()
-    else
-        setup()
-        print("Welcome, please choose 1-9")
-    local p1 = io.read("*line")
-    if p1 == "q" then
-        break
-    end
-    if tonumber(p1) and tonumber(p1) >= 1 and tonumber(p1) <= 9 and isEmpty(tonumber(p1)) then
-        board[tonumber(p1)] = "X"
-        local compMove = getComputermove()
-        if compMove then
-            board[compMove] = "O"
-        end
-    else
-        print("Invalid move, try again.")
-    end
-end
     
+    if mode == "h" or string.lower(mode) == "hard" then
+        boardcheck()
+        local winner = checkwin()
+        if winner == "comp" then
+            setup()
+            print("Computer won\n\n\n")
+            reset()
+        elseif winner == "player" then
+            setup()
+            print("Player won\n\n\n")
+            reset()
+        end
+        if boardcheck() == true then
+            setup()
+            print("DRAW\n\n\n")
+            reset()
+        else
+            setup()
+            print("Please choose 1-9")
+        end
+        local p1 = io.read("*line")
+        if p1 == "q" then
+            break
+        end
+        if tonumber(p1) and tonumber(p1) >= 1 and tonumber(p1) <= 9 and isEmpty(tonumber(p1)) then
+            board[tonumber(p1)] = "X"
+            local compMove = getComputermove()
+            if compMove then
+                board[compMove] = "O"
+            end
+        else
+            print("Invalid move, try again.")
+        end
+
+
+    elseif mode == "e" or string.lower(mode) == "easy" then
+        boardcheck()
+        local winner = checkwin()
+        if winner == "comp" then
+            setup()
+            print("Computer won\n\n\n")
+            reset()
+        elseif winner == "player" then
+            setup()
+            print("Player won\n\n\n")
+            reset()
+        end
+        if boardcheck() == true then
+            setup()
+            print("DRAW\n\n\n")
+            reset()
+        else
+            setup()
+            print("Please choose 1-9")
+        end
+        local p1 = io.read("*line")
+        if p1 == "q" then
+            break
+        end
+        if tonumber(p1) and tonumber(p1) >= 1 and tonumber(p1) <= 9 and isEmpty(tonumber(p1)) then
+            board[tonumber(p1)] = "X"
+            local compMove = getComputereasymove()
+            if compMove then
+                board[compMove] = "O"
+            end
+        else
+            print("Invalid move, try again.")
+        end
+    end -- hard mode if statement
 end
